@@ -85,8 +85,8 @@ void create_cell_types( void )
 	cell_defaults.functions.volume_update_function = standard_volume_update_function;
 	cell_defaults.functions.update_velocity = standard_update_cell_velocity;
 
-	cell_defaults.functions.update_migration_bias = custom_motility_function; //NULL; 
-	cell_defaults.functions.update_phenotype = NULL; // update_cell_and_death_parameters_O2_based; 
+	cell_defaults.functions.update_migration_bias = custom_motility_function; // NULL; 
+	cell_defaults.functions.update_phenotype = custom_cell_cycle_stop; // NULL; 
 	cell_defaults.functions.custom_cell_rule = NULL; 
 	cell_defaults.functions.contact_function = NULL; 
 	
@@ -214,12 +214,29 @@ void custom_motility_function( Cell* pCell, Phenotype& phenotype , double dt )
     double t =  PhysiCell_globals.current_time; 
 
 	// v(t) = v_init*EXP^(-lambda*t)
-	double initial_motility = parameters.doubles("initial_motility");       // v_init
-	double migration_decay_rate = parameters.doubles("migration_decay_rate");   // lambda
+	double initial_motility = parameters.doubles("initial_motility");         // v_init
+	double migration_decay_rate = parameters.doubles("migration_decay_rate"); // lambda
 	
 	double current_speed = initial_motility * exp(-migration_decay_rate*t);
 	phenotype.motility.migration_speed = current_speed;
-	//set_single_behavior( pCell , "migration speed" , current_speed );
 
     return; 
+}
+
+
+// custom cell phenotype function
+void custom_cell_cycle_stop( Cell* pCell, Phenotype& phenotype, double dt )
+{
+    double t =  PhysiCell_globals.current_time;
+	
+ 
+	if ( t > 30 ){
+		static int cycle_start_index = live.find_phase_index( PhysiCell_constants::live ); 
+		static int cycle_end_index = live.find_phase_index( PhysiCell_constants::live ); 
+
+		// Multiply by 0 to stop cycling
+		phenotype.cycle.data.transition_rate( cycle_start_index ,cycle_end_index ) *= 0;
+	}
+
+	return;
 }
