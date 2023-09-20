@@ -1,0 +1,56 @@
+Signals: 
+=======
+0 : substrate
+1 : intracellular substrate
+2 : substrate gradient
+3 : pressure
+4 : volume
+5 : contact with default
+6 : contact with live cell
+7 : contact with dead cell
+8 : contact with basement membrane
+9 : damage
+10 : dead
+11 : total attack time
+12 : time
+13 : custom:sample
+14 : apoptotic
+15 : necrotic
+
+Behaviors: 
+=========
+0 : substrate secretion
+1 : substrate secretion target
+2 : substrate uptake
+3 : substrate export
+4 : cycle entry
+5 : exit from cycle phase 1
+6 : exit from cycle phase 2
+7 : exit from cycle phase 3
+8 : exit from cycle phase 4
+9 : exit from cycle phase 5
+10 : apoptosis
+11 : necrosis
+12 : migration speed
+13 : migration bias
+14 : migration persistence time
+15 : chemotactic response to substrate
+16 : cell-cell adhesion
+17 : cell-cell adhesion elastic constant
+18 : adhesive affinity to default
+19 : relative maximum adhesion distance
+20 : cell-cell repulsion
+21 : cell-BM adhesion
+22 : cell-BM repulsion
+23 : phagocytose dead cell
+24 : phagocytose default
+25 : attack default
+26 : fuse to default
+27 : transform to default
+28 : custom:sample
+29 : is_movable
+30 : immunogenicity to default
+31 : cell attachment rate
+32 : cell detachment rate
+33 : maximum number of cell attachments
+

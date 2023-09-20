@@ -92,3 +92,5 @@ void contact_function( Cell* pMe, Phenotype& phenoMe , Cell* pOther, Phenotype& 
 
 void custom_motility_function( Cell* pCell, Phenotype& phenotype , double dt );
 void custom_cell_cycle_stop( Cell* pCell, Phenotype& phenotype, double dt );
+void custom_cell_function( Cell* pCell, Phenotype& phenotype, double dt );
+void wrap_boundaries( Cell* pCell );

@@ -86,9 +86,6 @@ void create_cell_types( void )
 	cell_defaults.functions.update_velocity = standard_update_cell_velocity;
 
 	cell_defaults.functions.update_migration_bias = custom_motility_function; // NULL; 
-	cell_defaults.functions.update_phenotype = custom_cell_cycle_stop; // NULL; 
-	cell_defaults.functions.custom_cell_rule = NULL; 
-	cell_defaults.functions.contact_function = NULL; 
 	
 	cell_defaults.functions.add_cell_basement_membrane_interactions = NULL; 
 	cell_defaults.functions.calculate_distance_to_membrane = NULL; 
@@ -123,8 +120,8 @@ void create_cell_types( void )
 	   This is a good place to set custom functions. 
 	*/ 
 	
-	cell_defaults.functions.update_phenotype = phenotype_function; 
-	cell_defaults.functions.custom_cell_rule = custom_function; 
+	cell_defaults.functions.update_phenotype = custom_cell_cycle_stop; // NULL; 
+	cell_defaults.functions.custom_cell_rule = custom_cell_function; // custom_function; 
 	cell_defaults.functions.contact_function = contact_function; 
 	
 	/*
@@ -225,12 +222,14 @@ void custom_motility_function( Cell* pCell, Phenotype& phenotype , double dt )
 
 
 // custom cell phenotype function
+
+
 void custom_cell_cycle_stop( Cell* pCell, Phenotype& phenotype, double dt )
 {
     double t =  PhysiCell_globals.current_time;
-	
- 
-	if ( t > 30 ){
+	double stoptime = parameters.doubles("division_stop_time");
+
+	if ( t > stoptime ){
 		static int cycle_start_index = live.find_phase_index( PhysiCell_constants::live ); 
 		static int cycle_end_index = live.find_phase_index( PhysiCell_constants::live ); 
 
@@ -239,4 +238,91 @@ void custom_cell_cycle_stop( Cell* pCell, Phenotype& phenotype, double dt )
 	}
 
 	return;
+}
+
+
+void custom_cell_function( Cell* pCell, Phenotype& phenotype, double dt )
+{
+	wrap_boundaries( pCell );
+}
+
+void wrap_boundaries( Cell* pCell )
+{
+
+	static double Xmin = microenvironment.mesh.bounding_box[0]; 
+	static double Ymin = microenvironment.mesh.bounding_box[1]; 
+	static double Zmin = microenvironment.mesh.bounding_box[2]; 
+
+	static double Xmax = microenvironment.mesh.bounding_box[3]; 
+	static double Ymax = microenvironment.mesh.bounding_box[4]; 
+	static double Zmax = microenvironment.mesh.bounding_box[5]; 
+	
+	static double avoid_zone = 20; 
+
+	static bool setup_done = false; 
+	if( setup_done == false )
+	{
+		Xmax -= avoid_zone; 
+		Xmin += avoid_zone; 
+		
+		Ymax -= avoid_zone;
+		Ymin += avoid_zone; 
+		
+		setup_done = true; 
+	}
+	
+	bool wrapped = false; 
+	
+	std::vector<double> p = pCell->position;
+	double Delta;
+
+
+	while( p[0] < Xmin )
+	{
+		Delta = Xmin - p[0]; 
+		p[0] = Xmax - Delta; 
+		wrapped = true; 
+	}
+	while( p[0] > Xmax )
+	{
+		Delta = p[0] - Xmax; 
+		p[0] = Xmin + Delta; 
+		wrapped = true; 
+	}
+	
+	while( p[1] < Ymin )
+	{
+		Delta = Ymin - p[1]; 
+		p[1] = Ymax - Delta; 
+		wrapped = true; 
+	}
+	while( p[1] > Ymax )
+	{
+		Delta = p[1] - Ymax; 
+		p[1] = Ymin + Delta; 
+		wrapped = true; 
+	}
+
+	if( default_microenvironment_options.simulate_2D == false )
+	{
+		while( p[2] < Zmin )
+		{
+			Delta = Zmin - p[2]; 
+			p[2] = Zmax - Delta; 
+			wrapped = true; 
+		}
+		while( p[2] > Zmax )
+		{
+			Delta = p[2] - Zmax; 
+			p[2] = Zmin + Delta; 
+			wrapped = true; 
+		}
+	}
+
+	if( wrapped == true ) 
+	{ 
+		#pragma omp critical 
+		{ pCell->assign_position( p ); }
+	} 
+	return; 
 }

@@ -330,9 +330,10 @@ void avoid_boundaries( Cell* pCell )
 
 void wrap_boundaries( Cell* pCell )
 {
-	return avoid_boundaries( pCell ); 
+	//return avoid_boundaries( pCell ); // add velocity to steer clear of the boundaries 
+
+	std::cout << "Hello wrap" << std::endl; 
 	
-	// add velocity to steer clear of the boundaries 
 	static double Xmin = microenvironment.mesh.bounding_box[0]; 
 	static double Ymin = microenvironment.mesh.bounding_box[1]; 
 	static double Zmin = microenvironment.mesh.bounding_box[2]; 
@@ -355,7 +356,7 @@ void wrap_boundaries( Cell* pCell )
 		setup_done = true; 
 	}
 	
-	bool wrapped = false; 
+	bool wrapped = true; 
 	
 	std::vector<double> p = pCell->position;
 	double Delta;
