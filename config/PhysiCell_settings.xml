@@ -87,7 +87,7 @@
 	</domain>
 	
 	<overall>
-		<max_time units="min">20000</max_time>
+		<max_time units="min">50000</max_time>
 		<time_units>min</time_units>
 		<space_units>micron</space_units>
 	
@@ -346,7 +346,7 @@
 		<!-- example parameters from the template --> 
 		<initial_motility type="double" units="" description="">3</initial_motility>
 		<migration_decay_rate type="double" units="" description="">0.0001</migration_decay_rate>
-		<division_stop_time type="double" units="" description="">1500</division_stop_time>
+		<division_stop_time type="double" units="" description="">8000</division_stop_time>
 
 		<div_initialization type="divider" description="---Initialization settings---"/>
 		

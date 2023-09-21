@@ -968,7 +968,7 @@ void Cell::add_potentials(Cell* other_agent)
 	
 	double RN = phenotype.geometry.nuclear_radius + (*other_agent).phenotype.geometry.nuclear_radius;	
 	double temp_r, c;
-	if( distance > R ) 
+	if( distance > 2*R ) 
 	{
 		temp_r=0;
 	}

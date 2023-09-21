@@ -120,8 +120,8 @@ void create_cell_types( void )
 	   This is a good place to set custom functions. 
 	*/ 
 	
-	cell_defaults.functions.update_phenotype = custom_cell_cycle_stop; // NULL; 
-	cell_defaults.functions.custom_cell_rule = custom_cell_function; // custom_function; 
+	cell_defaults.functions.update_phenotype = custom_cell_cycle_stop;  
+	cell_defaults.functions.custom_cell_rule = custom_cell_function; 
 	cell_defaults.functions.contact_function = contact_function; 
 	
 	/*
@@ -234,7 +234,7 @@ void custom_cell_cycle_stop( Cell* pCell, Phenotype& phenotype, double dt )
 		static int cycle_end_index = live.find_phase_index( PhysiCell_constants::live ); 
 
 		// Multiply by 0 to stop cycling
-		phenotype.cycle.data.transition_rate( cycle_start_index ,cycle_end_index ) *= 0;
+		phenotype.cycle.data.transition_rate( cycle_start_index , cycle_end_index ) *= 0;
 	}
 
 	return;
